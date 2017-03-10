@@ -5,16 +5,11 @@ This repo contains a script useful to clean docker images untagged from ECR repo
 ## Usage
 Edit create-lambda-function.py and decide how many days you want keep untagged images.
 ```python
-lf_input = {
-        'days': 60
-    }
+retention_days = 60
 ```
-
-Create a role for this lambda fuction with policy AmazonEC2ContainerRegistryPowerUser and put arn in the 
+Moreover create a role for this lambda fuction with policy AmazonEC2ContainerRegistryPowerUser and substitute arn.
 ```python
-lf = lam.create_function(FunctionName=rule_name,
-                         Runtime='python2.7',
-                         Role='arn:aws:iam::345762685377:role/lambda_ecr_cleaner',
+lambda_role = 'arn:aws:iam::345762685377:role/lambda_ecr_cleaner'
 ```
 
 Once you have edit, launch from shell create-lambda-function.py script.

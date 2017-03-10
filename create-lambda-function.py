@@ -7,6 +7,9 @@ aws=boto3.Session(region_name=('eu-west-1'))
 lam=aws.client('lambda')
 cwe=aws.client('events')
 
+lambda_role = 'arn:aws:iam::345762685377:role/lambda_ecr_cleaner'
+retention_days = 60
+
 zf = zipfile.ZipFile('lamba-script-package.zip', mode='w')
 try:
     zf.write('registry-cleaner.py')
@@ -37,7 +40,7 @@ rule = cwe.put_rule(
 
 lf = lam.create_function(FunctionName=rule_name,
                          Runtime='python2.7',
-                         Role='arn:aws:iam::345762685377:role/lambda_ecr_cleaner',
+                         Role=lambda_role,
                          Handler='registry-cleaner.lambda_handler',
                          Code={
                             'ZipFile': open('lamba-script-package.zip', 'rb').read(),
@@ -52,7 +55,7 @@ lam.add_permission(FunctionName=rule_name,
                    SourceArn=rule["RuleArn"])
 
 lf_input = {
-        'days': 60
+        'days': retention_days
     }
 
 cwe.put_targets(Rule=rule_name,
